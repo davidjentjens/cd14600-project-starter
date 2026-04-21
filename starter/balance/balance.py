@@ -6,22 +6,33 @@ class Balance:
     """Singleton to track the balance."""
 
     _instance = None
+    _balance = 0
+
+    @classmethod
+    def get_instance(cls):
+        """Get the singleton instance."""
+        if cls._instance is None:
+            cls._instance = cls()
+        return cls._instance
 
     def __init__(self):
         """Initialize the balance. Prevent direct instantiation."""
-        pass
+        if Balance._instance is not None:
+            raise Exception("Balance is a singleton")
+        Balance._instance = self
+        Balance._balance = 0
 
     def reset(self):
         """Reset the net balance to zero."""
-        pass
+        Balance._balance = 0
 
     def add_income(self, amount):
         """Add income to the balance."""
-        pass
+        Balance._balance += amount
 
     def add_expense(self, amount):
         """Subtract expense from the balance."""
-        pass
+        Balance._balance -= amount
 
     def apply_transaction(self, transaction):
         """
@@ -30,13 +41,18 @@ class Balance:
         Args:
             transaction (Transaction): The transaction to apply.
         """
-        pass
+        if transaction.category == TransactionCategory.INCOME:
+            self.add_income(transaction.amount)
+        elif transaction.category == TransactionCategory.EXPENSE:
+            self.add_expense(transaction.amount)
+        else:
+            raise ValueError("Invalid transaction category")
 
     def get_balance(self):
         """Get the current net balance."""
-        pass
+        return Balance._balance
 
     def summary(self):
         """Return a summary string of the net balance."""
-        pass
+        return f"Net balance: ${Balance._balance:.2f}"
     
