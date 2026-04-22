@@ -11,8 +11,7 @@ from transaction.transaction_command import TransactionInvoker, ApplyTransaction
 
 def main():
     print("Adding transactions...")
-   
-    # TODO: Create balance and add observers
+
     balance = Balance.get_instance()
     balance.register_observer(LowBalanceAlertObserver(100))
     balance.register_observer(PrintObserver())
@@ -32,7 +31,6 @@ def main():
 
     all_transactions = transactions + [adapted_transaction]
 
-    # TODO: Apply all transactions to balance
     invoker = TransactionInvoker()
     for transaction in all_transactions:
         command = ApplyTransactionCommand(balance, transaction)

@@ -57,12 +57,11 @@ class Balance:
         """
         if transaction.category == TransactionCategory.INCOME:
             self.add_income(transaction.amount)
-            self.notify_observers(transaction)
         elif transaction.category == TransactionCategory.EXPENSE:
             self.add_expense(transaction.amount)
-            self.notify_observers(transaction)
         else:
             raise ValueError("Invalid transaction category")
+        self.notify_observers(transaction)
 
     def get_balance(self):
         """Get the current net balance."""
@@ -71,5 +70,3 @@ class Balance:
     def summary(self):
         """Return a summary string of the net balance."""
         return f"Net balance: ${Balance._balance:.2f}"
-
-    

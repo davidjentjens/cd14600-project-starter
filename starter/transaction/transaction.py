@@ -13,4 +13,6 @@ class Transaction:
         return f"Transaction(${self.amount}, category='{self.category}')"
 
     def __eq__(self, other):
+        if not isinstance(other, Transaction):
+            return False
         return self.amount == other.amount and self.category == other.category

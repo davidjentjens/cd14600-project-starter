@@ -1,7 +1,6 @@
 # transaction_command.py
 
 from abc import ABC, abstractmethod
-from transaction.transaction import Transaction
 from transaction.transaction_category import TransactionCategory
 
 
@@ -33,6 +32,7 @@ class ApplyTransactionCommand(ICommand):
             self.balance.add_expense(self.transaction.amount)
         elif self.transaction.category == TransactionCategory.EXPENSE:
             self.balance.add_income(self.transaction.amount)
+
 
 class TransactionInvoker:
     """Invoker that manages command history for undo/redo."""
