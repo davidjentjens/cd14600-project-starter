@@ -7,6 +7,7 @@ class Balance:
 
     _instance = None
     _balance = 0
+    _observers = []
 
     @classmethod
     def get_instance(cls):
@@ -21,6 +22,19 @@ class Balance:
             raise Exception("Balance is a singleton")
         Balance._instance = self
         Balance._balance = 0
+
+    def register_observer(self, observer):
+        """Register an observer to the balance."""
+        Balance._observers.append(observer)
+
+    def unregister_observer(self, observer):
+        """Unregister an observer from the balance."""
+        Balance._observers.remove(observer)
+
+    def notify_observers(self, transaction):
+        """Notify all observers of a balance update."""
+        for observer in Balance._observers:
+            observer.update(self, transaction)
 
     def reset(self):
         """Reset the net balance to zero."""
@@ -43,8 +57,10 @@ class Balance:
         """
         if transaction.category == TransactionCategory.INCOME:
             self.add_income(transaction.amount)
+            self.notify_observers(transaction)
         elif transaction.category == TransactionCategory.EXPENSE:
             self.add_expense(transaction.amount)
+            self.notify_observers(transaction)
         else:
             raise ValueError("Invalid transaction category")
 
@@ -55,4 +71,5 @@ class Balance:
     def summary(self):
         """Return a summary string of the net balance."""
         return f"Net balance: ${Balance._balance:.2f}"
+
     
