@@ -6,12 +6,16 @@ from transaction.transaction import Transaction
 from transaction.transaction_category import TransactionCategory
 from transaction.transaction_adapter import TransactionAdapter
 from transaction.external_income_transaction import ExternalFreelanceIncome
+from transaction.transaction_command import TransactionInvoker, ApplyTransactionCommand
 
 
 def main():
     print("Adding transactions...")
    
     # TODO: Create balance and add observers
+    balance = Balance.get_instance()
+    balance.register_observer(LowBalanceAlertObserver(100))
+    balance.register_observer(PrintObserver())
 
     # Create standard transactions
     transactions = [
@@ -29,6 +33,20 @@ def main():
     all_transactions = transactions + [adapted_transaction]
 
     # TODO: Apply all transactions to balance
+    invoker = TransactionInvoker()
+    for transaction in all_transactions:
+        command = ApplyTransactionCommand(balance, transaction)
+        invoker.execute_command(command)
+
+    print("Transactions applied. Undoing last transaction...")
+    invoker.undo()
+    print("Redoing last transaction...")
+    invoker.redo()
+
+    print("Transactions applied. Undoing last transaction...")
+    invoker.undo()
+    print("Redoing last transaction...")
+    invoker.redo()
 
 if __name__ == "__main__":
     main()
